@@ -6,8 +6,6 @@
 - Valdivia Vásquez Gian Pool
 - Zela Flores Gabriel Frank
 
----
-
 ### Resumen
 
 Este código implementa un B-tree que permite la inserción de claves y la generación de un archivo de visualización en formato DOT. La estructura del árbol cambia según el valor de `MAX_KEYS`, lo que define el número máximo de claves por nodo y afecta la profundidad del árbol y la eficiencia en operaciones de inserción y búsqueda.
