@@ -50,6 +50,300 @@ Este experimento evalúa el impacto de utilizar diferentes valores para la varia
 ### Metodología
 Para llevar a cabo este experimento, el código fue modificado para medir el tiempo de ejecución de las operaciones de carga y búsqueda. Se utilizó la función `clock()` de la biblioteca `<time.h>` para registrar los tiempos.
 
+### Descripción de Archivos
+
+- **`main.c`**: Archivo principal que ejecuta el programa. Incluye la medición de tiempos para operaciones de búsqueda en el B-tree utilizando los datos de un archivo CSV.
+- **`b_tree.h`**: Archivo de cabecera que define la estructura del B-tree, las constantes y los prototipos de funciones esenciales.
+- **`b_tree.c`**: Archivo de implementación para las funciones definidas en `b_tree.h`.
+- **`data/random_numbers_1000000.csv`**: Archivo de entrada que contiene datos de prueba para insertar en el B-tree.
+- **`output/btree.dot`**: Archivo generado en formato DOT para visualizar la estructura del B-tree.
+
+---
+
+### Código de `main.c`
+
+Este archivo contiene el código principal del programa. Ejecuta la carga de datos en el B-tree y mide el tiempo de búsqueda de una clave específica.
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include "b_tree.h"
+
+// INTEGRANTES:
+// Huamani Vásquez Juan José
+// Valdivia Vásquez Gian Pool
+// Zela Flores Gabriel Frank
+
+int main() {
+    struct BTreeNode *root = NULL;
+    struct timespec inicio, fin;
+    long tiempo_transcurrido;
+
+    const char *filename = "data/random_numbers_1000000.csv"; // Ruta del archivo CSV
+    importCSVAndCreateBTree(filename, &root);
+    
+    clock_gettime(CLOCK_MONOTONIC, &inicio);
+    int searched = search(root, 6677025);  // Buscar clave específica en el árbol
+    clock_gettime(CLOCK_MONOTONIC, &fin);
+
+    tiempo_transcurrido = (fin.tv_sec - inicio.tv_sec) * 1000000000L + (fin.tv_nsec - inicio.tv_nsec);
+    
+    printf("Número encontrado (0/1): %d\n", searched);
+    printf("Tiempo de búsqueda: %ld nanosegundos\n", tiempo_transcurrido);
+    
+    return 0;
+}
+```
+
+---
+
+### Código de `b_tree.h`
+
+Este archivo de cabecera define la estructura del nodo `BTreeNode`, las constantes `MAX_KEYS` y `DECIMALES`, así como los prototipos de las funciones principales.
+
+```c
+#ifndef B_TREE_H
+#define B_TREE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_KEYS 5      // Máximo número de claves por nodo
+#define DECIMALES 10000000
+
+// Estructura del nodo en el B-tree
+struct BTreeNode {
+    int num_keys;
+    int keys[MAX_KEYS];
+    struct BTreeNode *children[MAX_KEYS + 1];
+};
+
+// Prototipos de funciones para manipulación del B-tree
+struct BTreeNode *createNode();
+void insert(struct BTreeNode **root, int key);
+void splitChild(struct BTreeNode *parent, int index);
+void insertNonFull(struct BTreeNode *node, int key);
+void insertKey(struct BTreeNode *node, int key);
+void printInOrder(struct BTreeNode *node);
+void generateDotFile(struct BTreeNode *root, const char *filename);
+void writeNode(FILE *file, struct BTreeNode *node, int *nodeCount);
+void importCSVAndCreateBTree(const char *filename, struct BTreeNode **root);
+int search(struct BTreeNode *node, int key);
+
+#endif // B_TREE_H
+```
+
+---
+
+### Código de `b_tree.c`
+
+Implementa todas las funciones necesarias para crear y gestionar un B-tree, desde la inserción y división de nodos hasta la búsqueda de claves y la generación de un archivo .dot para la visualización.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "b_tree.h"
+
+// Crea un nuevo nodo del B-tree
+struct BTreeNode *createNode() {
+    struct BTreeNode *newNode = (struct BTreeNode *)malloc(sizeof(struct BTreeNode));
+    if (newNode == NULL) {
+        printf("La asignación de memoria falló.\n");
+        exit(1);
+    }
+    newNode->num_keys = 0;
+    for (int i = 0; i < MAX_KEYS + 1; i++) {
+        newNode->children[i] = NULL;
+    }
+    return newNode;
+}
+
+// Inserta una clave en el B-tree
+void insert(struct BTreeNode **root, int key) {
+    if (*root == NULL) {
+        *root = createNode();
+        (*root)->keys[0] = key;
+        (*root)->num_keys = 1;
+    } else {
+        if ((*root)->num_keys == MAX_KEYS) {
+            struct BTreeNode *newRoot = createNode();
+            newRoot->children[0] = *root;
+            splitChild(newRoot, 0);
+            *root = newRoot;
+            int i = (key > newRoot->keys[0]) ? 1 : 0;
+            insertNonFull(newRoot->children[i], key);
+        } else {
+            insertNonFull(*root, key);
+        }
+    }
+}
+
+// Divide un nodo lleno y ajusta la estructura del B-tree
+void splitChild(struct BTreeNode *parent, int index) {
+    struct BTreeNode *child = parent->children[index];
+    struct BTreeNode *newChild = createNode();
+    int medianIndex = MAX_KEYS / 2;
+
+    newChild->num_keys = MAX_KEYS - medianIndex - 1;
+    for (int i = 0; i < newChild->num_keys; i++) {
+        newChild->keys[i] = child->keys[i + medianIndex + 1];
+    }
+
+    if (child->children[0] != NULL) {
+        for (int i = 0; i <= newChild->num_keys; i++) {
+            newChild->children[i] = child->children[i + medianIndex + 1];
+        }
+    }
+
+    child->num_keys = medianIndex;
+    for (int i = parent->num_keys; i > index; i--) {
+        parent->children[i + 1] = parent->children[i];
+    }
+    parent->children[index + 1] = newChild;
+
+    for (int i = parent->num_keys; i > index; i--) {
+        parent->keys[i] = parent->keys[i - 1];
+    }
+    parent->keys[index] = child->keys[medianIndex];
+    parent->num_keys++;
+}
+
+// Inserta una clave en un nodo que no está lleno
+void insertNonFull(struct BTreeNode *node, int key) {
+    int i = node->num_keys - 1;
+    if (node->children[0] == NULL) {
+        insertKey(node, key);
+        return;
+    }
+
+    while (i >= 0 && node->keys[i] > key) {
+        i--;
+    }
+    i++;
+    if (node->children[i]->num_keys == MAX_KEYS) {
+        splitChild(node, i);
+        if (node->keys[i] < key) {
+            i++;
+        }
+    }
+    insertNonFull(node->children[i], key);
+}
+
+// Inserta una clave directamente en un nodo
+void insertKey(struct BTreeNode *node, int key) {
+    int i = node->num_keys - 1;
+    while (i >= 0 && node->keys[i] > key) {
+        node->keys[i + 1] = node->keys[i];
+        i--;
+    }
+    node->keys[i + 1] = key;
+    node->num_keys++;
+}
+
+// Imprime las claves en orden ascendente
+void printInOrder(struct BTreeNode *node) {
+    if (node == NULL) return;
+
+    for (int i = 0; i < node->num_keys; i++) {
+        printInOrder(node->children[i]);
+        printf("%d ", node->keys[i]);
+    }
+    printInOrder(node->children[node->num_keys]);
+}
+
+// Genera un archivo DOT para visualizar el B-tree
+void generateDotFile(struct BTreeNode *root, const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("No se pudo abrir el archivo %s\n", filename);
+        return;
+    }
+
+    fprintf(file, "digraph BTree {\n");
+    fprintf(file, "    node [shape=record];\n");
+
+    int nodeCount = 0;
+    writeNode(file, root, &nodeCount);
+
+    fprintf(file, "}\n");
+    fclose(file);
+    printf("Archivo DOT generado correctamente en %s\n", filename);
+}
+
+// Escribe recursivamente los nodos y sus conexiones en el archivo DOT
+void writeNode(FILE *file, struct BTreeNode *node, int *nodeCount) {
+    if (node == NULL) return;
+
+    int currentNode = (*nodeCount)++;
+    fprintf(file, "    node%d [label=\"", currentNode);
+
+    int lastPortIndex = 0;
+    for (int i = 0; i < node->num_keys; i++) {
+        if (i > 0) fprintf(file, " | ");
+        lastPortIndex = i * 2;
+        fprintf(file, "<f%d>%d", lastPortIndex, node->keys[i]);
+        if (i < node->num_keys - 1) fprintf(file, " | <f%d>", lastPortIndex + 1);
+    }
+
+    fprintf(file, " | <f%d>", lastPortIndex + 1);
+    fprintf(file, "\"];\n");
+
+    int childPortIndex = 0;
+    for (int i = 0; i <= node->num_keys; i++) {
+        if (node->children[i] != NULL) {
+            int childNode = *nodeCount;
+            writeNode(file, node->children[i], nodeCount);
+
+            childPortIndex = (i == 0) ? 0 : (i == 1) ? 1 : (i * 2) - 1;
+            fprintf(file, "    node%d:f%d -> node%d:f0;\n", currentNode, childPortIndex, childNode);
+        }
+    }
+}
+
+// Importa claves de un archivo CSV y las inserta en el B-tree
+void importCSVAndCreateBTree(const char *filename, struct BTreeNode **root) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("No se pudo abrir el archivo %s\n", filename);
+        return;
+    }
+
+    char line[256];
+    fgets(line, sizeof(line), file);
+
+    while (fgets(line, sizeof(line), file)) {
+        char *token = strtok(line, ",");
+        token = strtok(NULL, ",");
+        if (token != NULL) {
+            double value = atof(token);
+            int key = (int)(value * DECIMALES);
+            if (!search(*root, key)) {
+                insert(root, key);
+            }
+        }
+    }
+
+    fclose(file);
+    printf("Datos importados y B-tree creado correctamente.\n");
+}
+
+// Busca una clave en el B-tree
+int search(struct BTreeNode *node, int key) {
+    while (node != NULL) {
+        int i = 0;
+        while (i < node->num_keys && key > node->keys[i]) {
+            i++;
+        }
+        if (i < node->num_keys && key == node->keys[i]) {
+            return 1;
+        }
+        node = node->children[i];
+    }
+    return 0;
+}
+```
+
 ### Visualización del B-tree
 
 El siguiente archivo `.dot` permite la visualización de la estructura del B-tree utilizado en este experimento. Este archivo define los nodos y conexiones del árbol, y puede renderizarse usando herramientas de visualización como Graphviz. La estructura del árbol varía según el valor de `MAX_KEYS`, afectando la profundidad y distribución de las claves.
