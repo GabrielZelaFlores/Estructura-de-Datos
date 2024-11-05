@@ -1,11 +1,10 @@
 
 # Informe Experimental: Comparación de Tiempos de Ejecución en un B-tree con Diferentes Valores de `MAX_KEYS`
 
-Integrantes:
-
--Huamaní Vásquez Juan José
--Valdivia Vásquez Gian Pool
--Zela Flores Gabriel Frank
+**Integrantes:**
+- Huamaní Vásquez Juan José
+- Valdivia Vásquez Gian Pool
+- Zela Flores Gabriel Frank
 
 ### Librerías Utilizadas
 
