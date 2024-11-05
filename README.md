@@ -122,6 +122,9 @@ digraph BTree {
     node0:f1 -> node19:f0;
 }
 ```
+### Diagrama
+
+![Diagrama de Graphviz](https://github.com/GabrielZelaFlores/Estructura-de-Datos/raw/main/graphviz.svg)
 
 1. **Configuración del archivo `b_tree.h`**:
    - Se varió el valor de `MAX_KEYS` entre 3, 4 y 5.
