@@ -51,7 +51,7 @@ Para llevar a cabo este experimento, el código fue modificado para medir el tie
 3. **`<string.h>`**: Contiene funciones para la manipulación de cadenas. Se usa principalmente para:
    - **Dividir y procesar líneas** en la función `importCSVAndCreateBTree` mediante `strtok` para extraer claves individuales desde el archivo CSV.
 
-4. **`<time.h>`**: Biblioteca de funciones de tiempo utilizada en `main.cpp` para:
+4. **`<time.h>`**: Biblioteca de funciones de tiempo utilizada en `main.c` para:
    - **Medición de tiempos de ejecución** (`clock`) durante la carga de datos y la búsqueda en el B-tree, con el fin de comparar el rendimiento para diferentes valores de `MAX_KEYS`.
 
 5. **Estructuras y Funciones Principales para el B-tree**:
