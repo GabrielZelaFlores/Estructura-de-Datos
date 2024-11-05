@@ -450,6 +450,8 @@ digraph BTree {
 
 ### Resultados Experimentales
 
+![Tabla de Datos](https://github.com/GabrielZelaFlores/Estructura-de-Datos/raw/main/data.png)
+
 | Configuración de `N° LLAVES` | Tiempo de Búsqueda (clave existe) (nanosegundos) | Tiempo de Búsqueda (clave no existe) (nanosegundos) |
 |-----------------------------|---------------------------------------------------|-----------------------------------------------------|
 | `N° LLAVES = 3`             | 983.9                                            | 897                                                 |
