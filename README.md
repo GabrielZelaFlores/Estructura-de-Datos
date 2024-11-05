@@ -51,12 +51,27 @@ Para llevar a cabo este experimento, el código fue modificado para medir el tie
 
 ### Resultados Experimentales
 
-| Configuración de MAX_KEYS | Tiempo de Carga (segundos) | Tiempo de Búsqueda (segundos) |
-|-----------------------------|----------------------------|-------------------------------|
-| MAX_KEYS = 2              | X.XXXX                     | X.XXXX                        |
-| MAX_KEYS = 3              | X.XXXX                     | X.XXXX                        |
+| Configuración de `N° LLAVES` | Tiempo de Búsqueda (clave existe) (nanosegundos) | Tiempo de Búsqueda (clave no existe) (nanosegundos) |
+|-----------------------------|---------------------------------------------------|-----------------------------------------------------|
+| `N° LLAVES = 3`             | 983.9                                            | 897                                                 |
+| `N° LLAVES = 4`             | 744.1                                            | 793                                                 |
+| `N° LLAVES = 5`             | 414.7                                            | 654.9                                               |
 
-> **Nota**: Los valores de tiempo exactos se deben llenar después de realizar la ejecución del código en cada configuración.
+> **Análisis de Resultados**:
+
+1. **Búsqueda de Claves Existentes**:
+   - **`N° LLAVES = 3`**: La búsqueda de una clave que existe en el árbol tarda un promedio de **983.9 nanosegundos**. Este es el tiempo más alto registrado entre las configuraciones de llaves, probablemente debido a la mayor profundidad del árbol al tener menos claves por nodo.
+   - **`N° LLAVES = 4`**: Con cuatro claves por nodo, el tiempo disminuye a **744.1 nanosegundos**, lo que sugiere que el árbol es menos profundo y se requiere un menor número de operaciones para encontrar la clave.
+   - **`N° LLAVES = 5`**: El tiempo de búsqueda baja aún más a **414.7 nanosegundos**, indicando una mejora significativa en la eficiencia al aumentar el número de claves por nodo. La menor profundidad del árbol permite alcanzar las claves con menos pasos.
+
+2. **Búsqueda de Claves No Existentes**:
+   - **`N° LLAVES = 3`**: Para claves que no existen en el árbol, el tiempo de búsqueda promedio es de **897 nanosegundos**. Aunque no se encuentra la clave, el árbol aún se recorre hasta los nodos hoja, resultando en un tiempo de búsqueda elevado.
+   - **`N° LLAVES = 4`**: Al permitir cuatro claves por nodo, el tiempo de búsqueda para una clave inexistente se reduce a **793 nanosegundos**, lo que refleja una mejora debido a la estructura menos profunda del árbol.
+   - **`N° LLAVES = 5`**: Con cinco claves por nodo, el tiempo baja a **654.9 nanosegundos**. Este es el tiempo más bajo entre las configuraciones probadas, sugiriendo que la eficiencia mejora conforme disminuye la profundidad del árbol.
+
+> **Conclusión**:
+   - Al aumentar el número de llaves por nodo (`N° LLAVES`), el tiempo de búsqueda se reduce tanto para claves existentes como para claves no existentes en el árbol.
+   - La configuración de `N° LLAVES = 5` ofrece el mejor rendimiento, lo que sugiere que el árbol, al ser menos profundo, permite una búsqueda más rápida al requerir menos comparaciones por nodo.
 
 ### Análisis y Conclusión
 
