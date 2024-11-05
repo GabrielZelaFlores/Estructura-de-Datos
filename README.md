@@ -1,6 +1,12 @@
 
 # Informe Experimental: Comparación de Tiempos de Ejecución en un B-tree con Diferentes Valores de `MAX_KEYS`
 
+Integrantes:
+
+-Huamaní Vásquez Juan José
+-Valdivia Vásquez Gian Pool
+-Zela Flores Gabriel Frank
+
 ### Librerías Utilizadas
 
 1. **`<stdio.h>`**: Proporciona funciones para entrada y salida estándar. En este código, se utiliza para:
