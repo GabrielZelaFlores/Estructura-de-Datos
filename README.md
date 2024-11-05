@@ -428,7 +428,7 @@ digraph BTree {
 ```
 ---
 
-### Diagrama
+### Diagrama de Ejemplo (100 datos)
 
 ![Diagrama de Graphviz](https://github.com/GabrielZelaFlores/Estructura-de-Datos/raw/main/graphviz.svg)
 
