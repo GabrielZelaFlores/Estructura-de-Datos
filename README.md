@@ -6,6 +6,38 @@
 - Valdivia Vásquez Gian Pool
 - Zela Flores Gabriel Frank
 
+---
+
+### Resumen
+
+Este código implementa un B-tree que permite la inserción de claves y la generación de un archivo de visualización en formato DOT. La estructura del árbol cambia según el valor de `MAX_KEYS`, lo que define el número máximo de claves por nodo y afecta la profundidad del árbol y la eficiencia en operaciones de inserción y búsqueda.
+
+El objetivo de este experimento es evaluar el rendimiento del B-tree al variar `MAX_KEYS` entre 3 , 4 y 5. Para ello:
+- Se mide el **tiempo de carga de datos** al insertar claves desde un archivo CSV en el árbol.
+- Se mide el **tiempo de búsqueda** para una clave específica en el árbol generado.
+
+---
+
+### Objetivo
+Este experimento evalúa el impacto de utilizar diferentes valores para la variable `MAX_KEYS` en un B-tree, específicamente `MAX_KEYS = 3`, `MAX_KEYS = 4` y `MAX_KEYS = 5`. Se mide y compara el tiempo de ejecución en dos operaciones principales:
+1. **Carga de datos**: el tiempo que tarda en insertar datos en el B-tree desde un archivo CSV.
+2. **Búsqueda de una clave**: el tiempo que tarda en buscar una clave específica en el árbol ya construido.
+
+---
+
+### Metodología
+Para llevar a cabo este experimento, el código fue modificado para medir el tiempo de ejecución de las operaciones de carga y búsqueda. Se utilizó la función `clock()` de la biblioteca `<time.h>` para registrar los tiempos.
+
+### Descripción de Archivos
+
+- **`main.c`**: Archivo principal que ejecuta el programa. Incluye la medición de tiempos para operaciones de búsqueda en el B-tree utilizando los datos de un archivo CSV.
+- **`b_tree.h`**: Archivo de cabecera que define la estructura del B-tree, las constantes y los prototipos de funciones esenciales.
+- **`b_tree.c`**: Archivo de implementación para las funciones definidas en `b_tree.h`.
+- **`data/random_numbers_1000000.csv`**: Archivo de entrada que contiene datos de prueba para insertar en el B-tree.
+- **`output/btree.dot`**: Archivo generado en formato DOT para visualizar la estructura del B-tree.
+
+---
+
 ### Librerías Utilizadas
 
 1. **`<stdio.h>`**: Proporciona funciones para entrada y salida estándar. En este código, se utiliza para:
@@ -29,34 +61,6 @@
    - **`insertNonFull`**: Inserta una clave en un nodo que no está lleno. Este es un subproceso de `insert`.
    - **`insertkey`**: Añade una clave en el lugar correcto dentro de un nodo.
    - **`printInOrder`**: Función que imprime el árbol en orden para visualizar la estructura actual del B-tree.
-
----
-
-### Resumen
-
-Este código implementa un B-tree que permite la inserción de claves y la generación de un archivo de visualización en formato DOT. La estructura del árbol cambia según el valor de `MAX_KEYS`, lo que define el número máximo de claves por nodo y afecta la profundidad del árbol y la eficiencia en operaciones de inserción y búsqueda.
-
-El objetivo de este experimento es evaluar el rendimiento del B-tree al variar `MAX_KEYS` entre 3 , 4 y 5. Para ello:
-- Se mide el **tiempo de carga de datos** al insertar claves desde un archivo CSV en el árbol.
-- Se mide el **tiempo de búsqueda** para una clave específica en el árbol generado.
-
----
-
-### Objetivo
-Este experimento evalúa el impacto de utilizar diferentes valores para la variable `MAX_KEYS` en un B-tree, específicamente `MAX_KEYS = 3`, `MAX_KEYS = 4` y `MAX_KEYS = 5`. Se mide y compara el tiempo de ejecución en dos operaciones principales:
-1. **Carga de datos**: el tiempo que tarda en insertar datos en el B-tree desde un archivo CSV.
-2. **Búsqueda de una clave**: el tiempo que tarda en buscar una clave específica en el árbol ya construido.
-
-### Metodología
-Para llevar a cabo este experimento, el código fue modificado para medir el tiempo de ejecución de las operaciones de carga y búsqueda. Se utilizó la función `clock()` de la biblioteca `<time.h>` para registrar los tiempos.
-
-### Descripción de Archivos
-
-- **`main.c`**: Archivo principal que ejecuta el programa. Incluye la medición de tiempos para operaciones de búsqueda en el B-tree utilizando los datos de un archivo CSV.
-- **`b_tree.h`**: Archivo de cabecera que define la estructura del B-tree, las constantes y los prototipos de funciones esenciales.
-- **`b_tree.c`**: Archivo de implementación para las funciones definidas en `b_tree.h`.
-- **`data/random_numbers_1000000.csv`**: Archivo de entrada que contiene datos de prueba para insertar en el B-tree.
-- **`output/btree.dot`**: Archivo generado en formato DOT para visualizar la estructura del B-tree.
 
 ---
 
