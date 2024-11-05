@@ -28,6 +28,8 @@ Este experimento evalúa el impacto de utilizar diferentes valores para la varia
 ### Metodología
 Para llevar a cabo este experimento, el código fue modificado para medir el tiempo de ejecución de las operaciones de carga y búsqueda. Se utilizó la función `clock()` de la biblioteca `<time.h>` para registrar los tiempos.
 
+---
+
 ### Descripción de Archivos
 
 - **`main.c`**: Archivo principal que ejecuta el programa. Incluye la medición de tiempos para operaciones de búsqueda en el B-tree utilizando los datos de un archivo CSV.
@@ -347,6 +349,7 @@ int search(struct BTreeNode *node, int key) {
     return 0;
 }
 ```
+---
 
 ### Visualización del B-tree
 
@@ -425,9 +428,13 @@ digraph BTree {
     node0:f1 -> node19:f0;
 }
 ```
+---
+
 ### Diagrama
 
 ![Diagrama de Graphviz](https://github.com/GabrielZelaFlores/Estructura-de-Datos/raw/main/graphviz.svg)
+
+---
 
 1. **Configuración del archivo `b_tree.h`**:
    - Se varió el valor de `MAX_KEYS` entre 3, 4 y 5.
@@ -440,6 +447,8 @@ digraph BTree {
 3. **Parámetros del experimento**:
    - Archivo CSV: `random_numbers_1000000.csv` (contiene un millón de valores para insertar en el árbol).
    - Clave de búsqueda: Se seleccionó una clave de prueba (`CLAVE_BUSCAR = 5000`) para evaluar la búsqueda en el árbol después de la carga.
+   - 
+ ---
 
 ### Resultados Experimentales
 
