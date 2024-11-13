@@ -141,7 +141,7 @@ Este proyecto implementa una **lista de reproducción de canciones** en C++ util
 - **Función**: La lista enlazada doble permite agregar y eliminar canciones fácilmente y cambiar su orden sin necesidad de reorganizar toda la lista.
 - **Uso en el Proyecto**: Cada canción se representa como un nodo de la lista enlazada doble, que contiene información como el título, el artista y la duración. Los nodos tienen punteros al nodo anterior y al siguiente, lo que permite un acceso eficiente en ambas direcciones.
 
-### Árbol Binario de Búsqueda (BST) o Árbol AVL (opcional)
+### Árbol Binario de Búsqueda (BST)
 - **Función**: Estos árboles permiten ordenar y buscar canciones de forma eficiente por atributos específicos, como popularidad o año de lanzamiento.
 - **Uso en el Proyecto**: Aunque actualmente no está implementado, en futuras etapas del desarrollo los nodos del árbol podrían representar canciones ordenadas por un atributo específico.
 
