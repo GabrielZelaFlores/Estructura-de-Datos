@@ -145,9 +145,9 @@ Este proyecto implementa una **lista de reproducción de canciones** en C++ util
 - **Función**: Estos árboles permiten ordenar y buscar canciones de forma eficiente por atributos específicos, como popularidad o año de lanzamiento.
 - **Uso en el Proyecto**: Aunque actualmente no está implementado, en futuras etapas del desarrollo los nodos del árbol podrían representar canciones ordenadas por un atributo específico.
 
-### Vector Dinámico
+### Array Dinámico
 - **Función**: Almacena temporalmente las canciones, permitiendo generar vistas de la lista ordenadas según diferentes criterios, como popularidad o duración.
-- **Uso en el Proyecto**: En futuras mejoras, el vector se redimensionará dinámicamente para mostrar las canciones en una vista ordenada.
+- **Uso en el Proyecto**: En futuras mejoras, el array se redimensionará dinámicamente para mostrar las canciones en una vista ordenada.
 
 ---
 
