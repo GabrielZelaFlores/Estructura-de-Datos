@@ -14,13 +14,13 @@ Función: Para almacenar las canciones de forma temporal y permitir vistas orden
 Uso en el Proyecto: Un vector que se redimensiona dinámicamente para almacenar las canciones según la vista seleccionada.
 
 ## Librerías
-iostream: Para entrada y salida de datos.
-string: Para manejar texto (título, artista, etc.).
-cstdlib y ctime (para reproducción aleatoria, si se implementa).
-vector: Para el manejo temporal de canciones ordenadas (opcional).
+- iostream: Para entrada y salida de datos.
+- string: Para manejar texto (título, artista, etc.).
+- cstdlib y ctime (para reproducción aleatoria, si se implementa).
+- vector: Para el manejo temporal de canciones ordenadas (opcional).
 
 ## Descripción del Código
-El código inicial se compone de tres clases:
+- El código inicial se compone de tres clases:
 Clase Cancion: Representa una canción con atributos básicos y un método mostrar para imprimir la información.
 Clase Nodo y ListaReproduccion: Implementa la lista enlazada doble. Contiene métodos para agregar y eliminar canciones y mostrar la lista.
 Función Principal: Permite agregar y eliminar canciones, y visualizar la lista de reproducción.
