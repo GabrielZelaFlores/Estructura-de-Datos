@@ -1,5 +1,12 @@
 # Gestor de Lista de Reproducción de Canciones 🎵
 
+**Integrantes:**
+- Huamaní Vásquez Juan José
+- Valdivia Vásquez Gian Pool
+- Zela Flores Gabriel Frank
+
+### Resumen
+
 Este proyecto es un gestor de listas de reproducción de canciones desarrollado en C++, diseñado para almacenar, organizar y manipular canciones utilizando varias estructuras de datos. Implementa una lista enlazada doble para gestionar dinámicamente la lista de reproducción, además de un árbol binario de búsqueda (BST) o AVL para búsquedas y ordenamientos opcionales.
 
 ## Estructuras de Datos Utilizadas
