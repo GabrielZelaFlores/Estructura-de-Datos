@@ -1,136 +1,140 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 
+// ----- Estructura básica de una canción -----
+struct Cancion {
+    std::string artista;
+    std::string titulo;
+    std::string id;
+    std::string genero;
+    int anio;
+    int popularidad;
 
-using namespace std;
-
-
-// Clase para representar una canción
-class Cancion {
-public:
-    string titulo;
-    string artista;
-    int duracion; // en segundos
-
-
-    Cancion(string titulo, string artista, int duracion)
-        : titulo(titulo), artista(artista), duracion(duracion) {}
-
-
-    void mostrar() const {
-        cout << "Título: " << titulo << ", Artista: " << artista << ", Duración: " << duracion << " segundos" << endl;
-    }
+    Cancion(const std::string& a, const std::string& t, const std::string& i, const std::string& g, int y, int p)
+        : artista(a), titulo(t), id(i), genero(g), anio(y), popularidad(p) {}
 };
 
-
-// Nodo de la lista enlazada doble
-class Nodo {
-public:
+// ----- Árbol Binario de Búsqueda -----
+struct NodoArbol {
     Cancion cancion;
-    Nodo* siguiente;
-    Nodo* anterior;
+    NodoArbol* izquierda;
+    NodoArbol* derecha;
 
-
-    Nodo(Cancion cancion) : cancion(cancion), siguiente(nullptr), anterior(nullptr) {}
+    NodoArbol(const Cancion& c) : cancion(c), izquierda(nullptr), derecha(nullptr) {}
 };
 
-
-// Clase para gestionar la lista de reproducción
-class ListaReproduccion {
+class ArbolBinario {
 private:
-    Nodo* cabeza;
-    Nodo* cola;
+    NodoArbol* raiz;
 
+    void insertarNodo(NodoArbol*& nodo, const Cancion& cancion) {
+        if (!nodo) {
+            nodo = new NodoArbol(cancion);
+        } else if (cancion.titulo < nodo->cancion.titulo) {
+            insertarNodo(nodo->izquierda, cancion);
+        } else {
+            insertarNodo(nodo->derecha, cancion);
+        }
+    }
+
+    void inOrden(NodoArbol* nodo) const {
+        if (nodo) {
+            inOrden(nodo->izquierda);
+            std::cout << "- " << nodo->cancion.titulo << " - " << nodo->cancion.artista
+                      << " (" << nodo->cancion.anio << ") Género: " << nodo->cancion.genero
+                      << ", Popularidad: " << nodo->cancion.popularidad << "\n";
+            inOrden(nodo->derecha);
+        }
+    }
+
+    void liberarNodos(NodoArbol* nodo) {
+        if (nodo) {
+            liberarNodos(nodo->izquierda);
+            liberarNodos(nodo->derecha);
+            delete nodo;
+        }
+    }
 
 public:
-    ListaReproduccion() : cabeza(nullptr), cola(nullptr) {}
+    ArbolBinario() : raiz(nullptr) {}
 
+    ~ArbolBinario() {
+        liberarNodos(raiz);
+    }
 
-    // Método para agregar una canción al final de la lista
     void agregarCancion(const Cancion& cancion) {
-        Nodo* nuevoNodo = new Nodo(cancion);
-        if (!cabeza) {
-            cabeza = cola = nuevoNodo;
-        } else {
-            cola->siguiente = nuevoNodo;
-            nuevoNodo->anterior = cola;
-            cola = nuevoNodo;
-        }
-        cout << "Canción agregada: " << cancion.titulo << endl;
+        insertarNodo(raiz, cancion);
     }
 
-
-    // Método para eliminar una canción por título
-    void eliminarCancion(const string& titulo) {
-        if (!cabeza) {
-            cout << "La lista está vacía. No se puede eliminar." << endl;
-            return;
-        }
-
-
-        Nodo* actual = cabeza;
-        while (actual && actual->cancion.titulo != titulo) {
-            actual = actual->siguiente;
-        }
-
-
-        if (!actual) {
-            cout << "Canción no encontrada: " << titulo << endl;
+    void mostrarOrdenado() const {
+        if (!raiz) {
+            std::cout << "El árbol está vacío.\n";
         } else {
-            if (actual->anterior) actual->anterior->siguiente = actual->siguiente;
-            if (actual->siguiente) actual->siguiente->anterior = actual->anterior;
-
-
-            if (actual == cabeza) cabeza = actual->siguiente;
-            if (actual == cola) cola = actual->anterior;
-
-
-            delete actual;
-            cout << "Canción eliminada: " << titulo << endl;
-        }
-    }
-
-
-    // Método para mostrar todas las canciones en la lista
-    void mostrarLista() const {
-        if (!cabeza) {
-            cout << "La lista de reproducción está vacía." << endl;
-            return;
-        }
-
-
-        Nodo* actual = cabeza;
-        while (actual) {
-            actual->cancion.mostrar();
-            actual = actual->siguiente;
+            inOrden(raiz);
         }
     }
 };
 
+// ----- Función para cargar canciones desde un archivo CSV -----
+void cargarCancionesDesdeCSV(const std::string& archivo, ArbolBinario& arbol) {
+    std::ifstream file(archivo);
+    if (!file.is_open()) {
+        std::cerr << "Error al abrir el archivo: " << archivo << "\n";
+        return;
+    }
 
-// Función principal para probar la funcionalidad básica
+    std::string linea;
+    // Leer y descartar encabezado
+    std::getline(file, linea);
+
+    while (std::getline(file, linea)) {
+        std::stringstream ss(linea);
+        std::string indice, artista, titulo, id, genero, temp;
+        int anio = 0, popularidad = 0;
+
+        try {
+            std::getline(ss, indice, ',');   // Índice (descartado)
+            std::getline(ss, artista, ','); // Nombre del artista
+            std::getline(ss, titulo, ',');  // Nombre de la canción
+            std::getline(ss, id, ',');      // ID de la canción
+            std::getline(ss, temp, ',');    // Popularidad
+            if (!temp.empty()) popularidad = std::stoi(temp);
+            std::getline(ss, temp, ',');    // Año
+            if (!temp.empty()) anio = std::stoi(temp);
+            std::getline(ss, genero, ',');  // Género
+
+            // Validar campos requeridos
+            if (artista.empty() || titulo.empty() || id.empty() || genero.empty()) {
+                std::cerr << "Línea inválida, se omitirá: " << linea << "\n";
+                continue;
+            }
+
+            // Crear canción y agregar al árbol
+            Cancion cancion(artista, titulo, id, genero, anio, popularidad);
+            arbol.agregarCancion(cancion);
+        } catch (const std::exception& e) {
+            std::cerr << "Error procesando la línea, se omitirá: " << linea << "\n";
+        }
+    }
+
+    std::cout << "Canciones cargadas desde el archivo: " << archivo << "\n";
+}
+
+// ----- Función Principal -----
 int main() {
-    ListaReproduccion lista;
+    ArbolBinario arbol;
 
+    // Ruta del archivo CSV
+    std::string archivoCSV = "spotify_data.csv";
 
-    // Agregar canciones
-    lista.agregarCancion(Cancion("Song 1", "Artist 1", 200));
-    lista.agregarCancion(Cancion("Song 2", "Artist 2", 180));
-    lista.agregarCancion(Cancion("Song 3", "Artist 3", 240));
+    // Cargar canciones desde el CSV en el árbol binario
+    cargarCancionesDesdeCSV(archivoCSV, arbol);
 
-
-    cout << "\nLista de Reproducción:" << endl;
-    lista.mostrarLista();
-
-
-    // Eliminar una canción
-    cout << "\nEliminando 'Song 2'..." << endl;
-    lista.eliminarCancion("Song 2");
-
-
-    cout << "\nLista de Reproducción Actualizada:" << endl;
-    lista.mostrarLista();
-
+    // Mostrar canciones ordenadas por título
+    std::cout << "\nCanciones ordenadas por título:\n";
+    arbol.mostrarOrdenado();
 
     return 0;
 }
