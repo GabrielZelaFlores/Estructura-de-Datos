@@ -690,7 +690,3 @@ Se han agregado dos nuevas estructuras de datos para manejar la lista de reprodu
 
 ---
 
-### Conclusión de las Mejoras
-El sistema ha evolucionado significativamente desde su versión inicial al incorporar estructuras de datos avanzadas, nuevas funcionalidades y un diseño más robusto. Ahora es más eficiente, escalable y capaz de manejar datos complejos.
-
-
