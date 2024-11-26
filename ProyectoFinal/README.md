@@ -320,7 +320,6 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
  actualizan los punteros de los nodos adyacentes para mantener la integridad de la lista y se elimina el nodo.
 - **Mostrar Lista**: Recorre todos los nodos de la lista desde la cabeza y muestra los detalles de cada canción.
 
----
 
 ## Posibles Mejoras
 
@@ -328,9 +327,11 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 2. **Reproducción en bucle**: Implementar una función que permita reproducir en un ciclo continuo las canciones.
 
 
-### Informe del Proyecto PART2 : Sistema de Gestión de Canciones
 
----
+
+
+### Informe del Proyecto PART2 : Sistema de Gestión de Canciones 🎵
+
 
 ### Resumen del Proyecto
 El objetivo del proyecto es construir un sistema de gestión de canciones utilizando estructuras de datos avanzadas como una **Lista Doblemente Enlazada (DoublyLinkedList)**, un **Árbol AVL (AVLTree)** y una **Tabla Hash (HashTable)**. Cada estructura cumple un propósito específico: facilitar la manipulación, búsqueda y almacenamiento eficiente de datos relacionados con canciones. El sistema incluye la posibilidad de cargar canciones desde un archivo CSV, realizar operaciones CRUD (crear, leer, actualizar, eliminar), y mostrar los datos en diferentes estructuras.
