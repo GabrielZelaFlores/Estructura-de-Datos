@@ -615,9 +615,7 @@ int main() {
 ---
 ```
 
-## Cambios y Mejoras Incorporadas en la Parte 2
-
-A partir del informe anterior y el código actual del proyecto, se han incorporado las siguientes **mejoras** y **adiciones** en la segunda parte:
+# Cambios y Mejoras Incorporadas en la Parte 2
 
 ---
 
