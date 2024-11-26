@@ -326,7 +326,7 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 
 1. **Evitar duplicados**: Agregar control para evitar canciones con el mismo título.
 2. **Reproducción en bucle**: Implementar una función que permita reproducir en un ciclo continuo las canciones.
-```
+
 
 ### Informe del Proyecto PART2 : Sistema de Gestión de Canciones
 
