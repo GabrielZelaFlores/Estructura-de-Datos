@@ -1,140 +1,104 @@
-#include <iostream>
+#include "DoublyLinkedList.h"
+#include "HashTable.h"
+#include "AVLTree.h"
 #include <fstream>
 #include <sstream>
-#include <string>
+#include <iostream>
 
-// ----- Estructura básica de una canción -----
-struct Cancion {
-    std::string artista;
-    std::string titulo;
-    std::string id;
-    std::string genero;
-    int anio;
-    int popularidad;
-
-    Cancion(const std::string& a, const std::string& t, const std::string& i, const std::string& g, int y, int p)
-        : artista(a), titulo(t), id(i), genero(g), anio(y), popularidad(p) {}
-};
-
-// ----- Árbol Binario de Búsqueda -----
-struct NodoArbol {
-    Cancion cancion;
-    NodoArbol* izquierda;
-    NodoArbol* derecha;
-
-    NodoArbol(const Cancion& c) : cancion(c), izquierda(nullptr), derecha(nullptr) {}
-};
-
-class ArbolBinario {
-private:
-    NodoArbol* raiz;
-
-    void insertarNodo(NodoArbol*& nodo, const Cancion& cancion) {
-        if (!nodo) {
-            nodo = new NodoArbol(cancion);
-        } else if (cancion.titulo < nodo->cancion.titulo) {
-            insertarNodo(nodo->izquierda, cancion);
-        } else {
-            insertarNodo(nodo->derecha, cancion);
-        }
-    }
-
-    void inOrden(NodoArbol* nodo) const {
-        if (nodo) {
-            inOrden(nodo->izquierda);
-            std::cout << "- " << nodo->cancion.titulo << " - " << nodo->cancion.artista
-                      << " (" << nodo->cancion.anio << ") Género: " << nodo->cancion.genero
-                      << ", Popularidad: " << nodo->cancion.popularidad << "\n";
-            inOrden(nodo->derecha);
-        }
-    }
-
-    void liberarNodos(NodoArbol* nodo) {
-        if (nodo) {
-            liberarNodos(nodo->izquierda);
-            liberarNodos(nodo->derecha);
-            delete nodo;
-        }
-    }
-
-public:
-    ArbolBinario() : raiz(nullptr) {}
-
-    ~ArbolBinario() {
-        liberarNodos(raiz);
-    }
-
-    void agregarCancion(const Cancion& cancion) {
-        insertarNodo(raiz, cancion);
-    }
-
-    void mostrarOrdenado() const {
-        if (!raiz) {
-            std::cout << "El árbol está vacío.\n";
-        } else {
-            inOrden(raiz);
-        }
-    }
-};
-
-// ----- Función para cargar canciones desde un archivo CSV -----
-void cargarCancionesDesdeCSV(const std::string& archivo, ArbolBinario& arbol) {
-    std::ifstream file(archivo);
+void loadSongsFromCSV(const std::string& filename, DoublyLinkedList& list,
+                      HashTable& hashTable, AVLTree& avlTree) {
+    std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error al abrir el archivo: " << archivo << "\n";
+        std::cerr << "Error al abrir el archivo CSV.\n";
         return;
     }
 
-    std::string linea;
-    // Leer y descartar encabezado
-    std::getline(file, linea);
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string id, artist, track, genre;
+        int year, popularity, duration;
+        std::getline(ss, id, ',');
+        std::getline(ss, artist, ',');
+        std::getline(ss, track, ',');
+        std::getline(ss, genre, ',');
+        ss >> year >> popularity >> duration;
 
-    while (std::getline(file, linea)) {
-        std::stringstream ss(linea);
-        std::string indice, artista, titulo, id, genero, temp;
-        int anio = 0, popularidad = 0;
-
-        try {
-            std::getline(ss, indice, ',');   // Índice (descartado)
-            std::getline(ss, artista, ','); // Nombre del artista
-            std::getline(ss, titulo, ',');  // Nombre de la canción
-            std::getline(ss, id, ',');      // ID de la canción
-            std::getline(ss, temp, ',');    // Popularidad
-            if (!temp.empty()) popularidad = std::stoi(temp);
-            std::getline(ss, temp, ',');    // Año
-            if (!temp.empty()) anio = std::stoi(temp);
-            std::getline(ss, genero, ',');  // Género
-
-            // Validar campos requeridos
-            if (artista.empty() || titulo.empty() || id.empty() || genero.empty()) {
-                std::cerr << "Línea inválida, se omitirá: " << linea << "\n";
-                continue;
-            }
-
-            // Crear canción y agregar al árbol
-            Cancion cancion(artista, titulo, id, genero, anio, popularidad);
-            arbol.agregarCancion(cancion);
-        } catch (const std::exception& e) {
-            std::cerr << "Error procesando la línea, se omitirá: " << linea << "\n";
-        }
+        Song song(id, artist, track, genre, year, popularity, duration);
+        list.addSong(song);
+        hashTable.insert(song);
+        avlTree.insert(song);
     }
+    file.close();
+}int main() {
+    DoublyLinkedList playlist;
+    HashTable hashTable;
+    AVLTree avlTree;
 
-    std::cout << "Canciones cargadas desde el archivo: " << archivo << "\n";
-}
+    loadSongsFromCSV("spotify_data.csv", playlist, hashTable, avlTree);
 
-// ----- Función Principal -----
-int main() {
-    ArbolBinario arbol;
+    int option;
+    do {
+        std::cout << "\nMenu:\n";
+        std::cout << "1. Agregar canción\n";
+        std::cout << "2. Eliminar canción\n";
+        std::cout << "3. Buscar canción\n";
+        std::cout << "4. Mostrar canciones\n";
+        std::cout << "5. Salir\n";
+        std::cout << "Seleccione una opción: ";
+        std::cin >> option;
+        switch (option) {
+            case 1: {
+                std::string id, artist, track, genre;
+                int year, popularity, duration;
+                std::cout << "Ingrese ID: "; std::cin >> id;
+                std::cout << "Ingrese Artista: "; std::cin.ignore(); std::getline(std::cin, artist);
+                std::cout << "Ingrese Canción: "; std::getline(std::cin, track);
+                std::cout << "Ingrese Género: "; std::getline(std::cin, genre);
+                std::cout << "Ingrese Año: "; std::cin >> year;
+                std::cout << "Ingrese Popularidad: "; std::cin >> popularity;
+                std::cout << "Ingrese Duración: "; std::cin >> duration;
 
-    // Ruta del archivo CSV
-    std::string archivoCSV = "spotify_data.csv";
+                Song newSong(id, artist, track, genre, year, popularity, duration);
+                playlist.addSong(newSong);
+                hashTable.insert(newSong);
+                avlTree.insert(newSong);
+                break;
+            }
+            case 2: {
+                std::string id;
+                std::cout << "Ingrese ID de la canción a eliminar: "; std::cin >> id;
+                if (playlist.removeSong(id)) {
+                    hashTable.remove(id);
+                    std::cout << "Canción eliminada.\n";
+                } else {
+                    std::cout << "Canción no encontrada.\n";
+                }
+                break;
+            }
+            case 3: {
+                std::string id;
+                std::cout << "Ingrese ID de la canción a buscar: "; std::cin >> id;
+                Song* song = hashTable.find(id);
+                if (song) {
+                    std::cout << "Canción encontrada: " << song->getTrackName() << " - " 
+                              << song->getArtistName() << std::endl;
+                } else {
+                    std::cout << "Canción no encontrada.\n";
+                }
+                break;
+            }
+            case 4:
+                std::cout << "Canciones en la lista:\n";
+                playlist.printAll();
+                break;
+            case 5:
+                std::cout << "Saliendo...\n";
+                break;
+            default:
+                std::cout << "Opción inválida. Intente de nuevo.\n";
+            }
+        } while (option != 5);
 
-    // Cargar canciones desde el CSV en el árbol binario
-    cargarCancionesDesdeCSV(archivoCSV, arbol);
-
-    // Mostrar canciones ordenadas por título
-    std::cout << "\nCanciones ordenadas por título:\n";
-    arbol.mostrarOrdenado();
-
-    return 0;
-}
+        return 0;
+        }
