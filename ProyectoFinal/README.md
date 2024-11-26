@@ -328,7 +328,13 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 
 
 
-### Informe del Proyecto PART2 : Sistema de Gestión de Canciones 🎵
+# Informe del Proyecto PART2 : Sistema de Gestión de Canciones 🎵
+
+## Integrantes del Proyecto
+
+- Huamaní Vásquez Juan José
+- Valdivia Vásquez Gian Pool
+- Zela Flores Gabriel Frank
 
 
 ### Resumen del Proyecto
