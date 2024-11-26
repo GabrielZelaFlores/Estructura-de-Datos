@@ -327,5 +327,298 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 1. **Evitar duplicados**: Agregar control para evitar canciones con el mismo título.
 2. **Reproducción en bucle**: Implementar una función que permita reproducir en un ciclo continuo las canciones.
 ```
-# Proyecto PARTE 2: Sistema de Lista de Reproducción de Canciones en C++ 🎵
+
+### Informe del Proyecto PART2 : Sistema de Gestión de Canciones
+
+---
+
+### Resumen del Proyecto
+El objetivo del proyecto es construir un sistema de gestión de canciones utilizando estructuras de datos avanzadas como una **Lista Doblemente Enlazada (DoublyLinkedList)**, un **Árbol AVL (AVLTree)** y una **Tabla Hash (HashTable)**. Cada estructura cumple un propósito específico: facilitar la manipulación, búsqueda y almacenamiento eficiente de datos relacionados con canciones. El sistema incluye la posibilidad de cargar canciones desde un archivo CSV, realizar operaciones CRUD (crear, leer, actualizar, eliminar), y mostrar los datos en diferentes estructuras.
+
+---
+
+### Estructuras Implementadas
+A continuación, se describen las principales estructuras de datos utilizadas:
+
+---
+
+#### **1. Árbol AVL (AVLTree)** 
+**Propósito**: Implementar un árbol de búsqueda binaria balanceado para realizar búsquedas eficientes en O(log n).
+
+**Características**:
+- Balancea automáticamente el árbol al realizar inserciones.
+- Rotaciones simples y dobles para mantener el balance.
+- Los nodos contienen información de la canción, un puntero a sus hijos izquierdo y derecho, y la altura del nodo.
+
+```cpp
+---
+AVLTree.h
+#ifndef AVLTREE_H
+#define AVLTREE_H
+
+#include "Song.h"
+#include <iostream>
+
+class AVLTree {
+private:
+    struct Node {
+        Song song;
+        Node* left;
+        Node* right;
+        int height;
+        Node(const Song& s) : song(s), left(nullptr), right(nullptr), height(1) {}
+    };
+
+    Node* root;
+
+    int height(Node* node);
+    int balanceFactor(Node* node);
+    Node* rotateRight(Node* y);
+    Node* rotateLeft(Node* x);
+    Node* insert(Node* node, const Song& song);
+
+public:
+    AVLTree() : root(nullptr) {}
+    void insert(const Song& song);
+};
+
+#endif
+---
+```
+
+---
+
+#### **2. Lista Doblemente Enlazada (DoublyLinkedList)** 
+**Propósito**: Manejar datos secuenciales de forma dinámica.
+
+**Características**:
+- Permite recorrer la lista en ambos sentidos (hacia adelante y hacia atrás).
+- Operaciones principales:
+  - **addSong**: Agrega canciones al final.
+  - **removeSong**: Elimina una canción dado su ID.
+  - **printAll**: Muestra las canciones en el orden de inserción.
+
+```cpp
+---
+DoublyLinkedList.h
+#ifndef DOUBLYLINKEDLIST_H
+#define DOUBLYLINKEDLIST_H
+
+#include "Song.h"
+#include <iostream>
+
+class DoublyLinkedList {
+private:
+    struct Node {
+        Song song;
+        Node* next;
+        Node* prev;
+        Node(const Song& s) : song(s), next(nullptr), prev(nullptr) {}
+    };
+
+    Node* head;
+    Node* tail;
+
+public:
+    DoublyLinkedList() : head(nullptr), tail(nullptr) {}
+    void addSong(const Song& song);
+    bool removeSong(const std::string& trackId);
+    void printAll() const;
+};
+
+#endif
+---
+```
+
+---
+
+#### **3. Tabla Hash (HashTable)** 
+**Propósito**: Implementar una tabla hash eficiente para realizar búsquedas de canciones por ID en O(1) en el mejor de los casos.
+
+**Características**:
+- Usa el ID de la canción como clave para calcular su posición en la tabla.
+- Manejo de colisiones mediante **listas enlazadas** en cada bucket.
+- Funcionalidades principales:
+  - **insert**: Inserta una canción si no está duplicada.
+  - **remove**: Elimina una canción dado su ID.
+  - **find**: Busca y retorna una canción por su ID.
+
+```cpp
+---
+HashTable.h
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+
+#include <vector>
+#include <list>
+#include "Song.h"
+
+class HashTable {
+private:
+    static const int TABLE_SIZE = 10007;
+    std::vector<std::list<Song>> table;
+    int hash(const std::string& key) const;
+
+public:
+    HashTable() : table(TABLE_SIZE) {}
+    void insert(const Song& song);
+    bool remove(const std::string& trackId);
+    Song* find(const std::string& trackId);
+};
+
+#endif
+---
+```
+
+---
+
+#### **4. Clase Song** 
+**Propósito**: Representar una canción con todos sus atributos.
+
+**Atributos**:
+- ID de la canción.
+- Nombre del artista.
+- Nombre de la canción.
+- Género, año, popularidad y duración.
+
+```cpp
+---
+Song.h
+#ifndef SONG_H
+#define SONG_H
+
+#include <string>
+
+class Song {
+private:
+    std::string trackId;
+    std::string artistName;
+    std::string trackName;
+    std::string genre;
+    int year;
+    int popularity;
+    int duration;
+
+public:
+    Song(const std::string& id, const std::string& artist, const std::string& track,
+         const std::string& genre, int year, int popularity, int duration)
+        : trackId(id), artistName(artist), trackName(track), genre(genre),
+          year(year), popularity(popularity), duration(duration) {}
+
+    const std::string& getTrackId() const;
+    const std::string& getArtistName() const;
+    const std::string& getTrackName() const;
+    const std::string& getGenre() const;
+    int getYear() const;
+    int getPopularity() const;
+    int getDuration() const;
+};
+
+#endif
+---
+```
+
+---
+
+### Carga de Canciones desde CSV
+El archivo `main.cpp` incluye una función para cargar canciones desde un archivo CSV. Las canciones se agregan a las tres estructuras implementadas (Lista, Árbol y Tabla Hash).
+
+```cpp
+---
+void loadSongsFromCSV(const std::string& filename, DoublyLinkedList& list,
+                      HashTable& hashTable, AVLTree& avlTree) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error al abrir el archivo CSV.\n";
+        return;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string id, artist, track, genre;
+        int year, popularity, duration;
+        std::getline(ss, id, ',');
+        std::getline(ss, artist, ',');
+        std::getline(ss, track, ',');
+        std::getline(ss, genre, ',');
+        ss >> year >> popularity >> duration;
+
+        Song song(id, artist, track, genre, year, popularity, duration);
+        list.addSong(song);
+        hashTable.insert(song);
+        avlTree.insert(song);
+    }
+    file.close();
+}
+---
+```
+
+---
+
+### Interfaz de Usuario
+El programa incluye un menú interactivo con las siguientes opciones:
+1. **Agregar canción**.
+2. **Eliminar canción**.
+3. **Buscar canción por ID**.
+4. **Mostrar todas las canciones**.
+5. **Salir del programa**.
+
+```cpp
+---
+main.cpp
+int main() {
+    DoublyLinkedList playlist;
+    HashTable hashTable;
+    AVLTree avlTree;
+
+    loadSongsFromCSV("spotify_data.csv", playlist, hashTable, avlTree);
+
+    int option;
+    do {
+        std::cout << "\nMenu:\n";
+        std::cout << "1. Agregar canción\n";
+        std::cout << "2. Eliminar canción\n";
+        std::cout << "3. Buscar canción\n";
+        std::cout << "4. Mostrar canciones\n";
+        std::cout << "5. Salir\n";
+        std::cout << "Seleccione una opción: ";
+        std::cin >> option;
+
+        switch (option) {
+            case 1:
+                // Implementación de agregar canción
+                break;
+            case 2:
+                // Implementación de eliminar canción
+                break;
+            case 3:
+                // Implementación de buscar canción
+                break;
+            case 4:
+                // Implementación de mostrar canciones
+                break;
+            case 5:
+                std::cout << "Saliendo...\n";
+                break;
+            default:
+                std::cout << "Opción inválida. Intente de nuevo.\n";
+        }
+    } while (option != 5);
+
+    return 0;
+}
+---
+```
+
+---
+
+### Conclusión
+El sistema implementa estructuras de datos modernas para manejar un conjunto de canciones de manera eficiente, soportando operaciones clave como inserción, eliminación y búsqueda. Es escalable y puede manejar grandes volúmenes de datos gracias a la Tabla Hash y el Árbol AVL.
+
+### Posibles Mejoras
+1. Implementar serialización para guardar los datos en archivos persistentes.
+2. Agregar pruebas unitarias para garantizar la funcionalidad.
+3. Optimizar la búsqueda en el menú para interactuar con estructuras específicas.
+
 
