@@ -327,7 +327,6 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 2. **Reproducción en bucle**: Implementar una función que permita reproducir en un ciclo continuo las canciones.
 
 
-
 # Informe del Proyecto PART2 : Sistema de Gestión de Canciones 🎵
 
 ## Integrantes del Proyecto
@@ -616,9 +615,84 @@ int main() {
 ---
 ```
 
+## Cambios y Mejoras Incorporadas en la Parte 2
+
+A partir del informe anterior y el código actual del proyecto, se han incorporado las siguientes **mejoras** y **adiciones** en la segunda parte:
+
 ---
 
-### Conclusión
-El sistema implementa estructuras de datos modernas para manejar un conjunto de canciones de manera eficiente, soportando operaciones clave como inserción, eliminación y búsqueda. Es escalable y puede manejar grandes volúmenes de datos gracias a la Tabla Hash y el Árbol AVL.
+### **1. Estructuras de Datos Avanzadas**
+Se han agregado dos nuevas estructuras de datos para manejar la lista de reproducción de manera más eficiente y flexible:
+   
+#### **a. Árbol AVL (AVLTree)**
+   - **Nuevo**: Implementado un árbol AVL, una estructura balanceada que mejora la eficiencia de búsqueda, inserción y eliminación de canciones, garantizando un tiempo promedio de O(log n) para estas operaciones.
+   - **Objetivo**: Permitir búsquedas rápidas por el nombre de las canciones (`trackName`).
+   - **Diferencia**: El informe anterior solo utilizaba una lista doblemente enlazada para almacenar canciones; ahora también se tiene un enfoque basado en jerarquías y balance dinámico.
+
+#### **b. Tabla Hash (HashTable)**
+   - **Nuevo**: Añadida una tabla hash para buscar canciones directamente por su `trackId`, mejorando la velocidad de búsqueda a O(1) en promedio.
+   - **Objetivo**: Permitir búsquedas rápidas mediante una clave única (ID de canción).
+   - **Diferencia**: No se disponía de una estructura que facilitara accesos directos mediante claves únicas en la versión anterior.
+
+---
+
+### **2. Carga de Canciones desde Archivos CSV**
+   - **Nuevo**: Se añadió una función para cargar canciones desde un archivo CSV (`spotify_data.csv`) y almacenarlas en todas las estructuras (lista, árbol AVL y tabla hash) simultáneamente.
+   - **Objetivo**: Simplificar la creación inicial de la lista de reproducción con datos externos, reduciendo la necesidad de ingresar manualmente cada canción.
+   - **Diferencia**: En el código anterior, las canciones se agregaban únicamente mediante la entrada directa desde el programa principal.
+
+---
+
+### **3. Clase `Song` (Cancion Mejorada)**
+   - **Nuevo**: Ahora, la clase que representa una canción incluye más atributos, como `genre`, `year`, `popularity` y `duration`, para un manejo más completo de los datos relacionados con cada canción.
+   - **Objetivo**: Incrementar la cantidad de información disponible por canción y permitir búsquedas por diferentes atributos.
+   - **Diferencia**: En la versión anterior, las canciones solo contenían el título, artista y duración.
+
+---
+
+### **4. Menú Interactivo Ampliado**
+   - **Nuevo**: El menú del programa ahora incluye opciones para gestionar canciones en todas las estructuras de datos:
+     - Agregar canción (a todas las estructuras).
+     - Eliminar canción (por `trackId`).
+     - Buscar canción (utilizando la tabla hash para búsquedas rápidas).
+     - Mostrar canciones (recorriendo la lista doblemente enlazada).
+   - **Objetivo**: Brindar una interfaz más robusta y funcional para interactuar con el sistema.
+   - **Diferencia**: El menú anterior estaba limitado a las operaciones básicas de agregar, eliminar y mostrar canciones solo en la lista enlazada.
+
+---
+
+### **5. Funcionalidad de Eliminación Mejorada**
+   - **Nuevo**: Ahora, al eliminar una canción, la operación afecta a todas las estructuras (lista, árbol AVL y tabla hash) para mantener la consistencia de los datos.
+   - **Diferencia**: En la versión anterior, la eliminación solo afectaba a la lista enlazada.
+
+---
+
+### **6. Soporte para Búsqueda Avanzada**
+   - **Nuevo**: La búsqueda de canciones ahora utiliza la tabla hash para localizar rápidamente canciones por su `trackId`, una mejora significativa en términos de rendimiento.
+   - **Diferencia**: Antes, las búsquedas requerían recorrer toda la lista enlazada, lo cual tenía una complejidad de O(n).
+
+---
+
+### **7. Modificación del Nodo de la Lista Enlazada**
+   - **Cambio**: El nodo de la lista ahora utiliza la clase `Song` como estructura central, lo que mejora la coherencia y reutilización de la información entre todas las estructuras.
+   - **Diferencia**: En el informe anterior, el nodo contenía datos limitados que no eran compatibles directamente con las otras estructuras.
+
+---
+
+### **Comparación Resumida**
+
+| **Característica**            | **Antes**                           | **Ahora**                                          |
+|-------------------------------|-------------------------------------|---------------------------------------------------|
+| **Estructura Principal**      | Lista doblemente enlazada.          | Lista doble, árbol AVL, y tabla hash.             |
+| **Búsqueda**                  | Lineal (O(n)).                     | Rápida (O(1) con hash, O(log n) con AVL).         |
+| **Carga de Datos**            | Manual desde `main`.               | Automática desde un archivo CSV.                 |
+| **Clase Canción**             | Básica (3 atributos).              | Detallada (7 atributos).                         |
+| **Operaciones CRUD**          | Limitadas a la lista enlazada.      | Compatibles con lista, árbol AVL y tabla hash.   |
+| **Menú Interactivo**          | Opciones básicas.                  | Opciones avanzadas para todas las estructuras.   |
+
+---
+
+### Conclusión de las Mejoras
+El sistema ha evolucionado significativamente desde su versión inicial al incorporar estructuras de datos avanzadas, nuevas funcionalidades y un diseño más robusto. Ahora es más eficiente, escalable y capaz de manejar datos complejos.
 
 
