@@ -328,8 +328,6 @@ Título: Song 3, Artista: Artist 3, Duración: 240 segundos
 
 
 
-
-
 ### Informe del Proyecto PART2 : Sistema de Gestión de Canciones 🎵
 
 
@@ -616,10 +614,5 @@ int main() {
 
 ### Conclusión
 El sistema implementa estructuras de datos modernas para manejar un conjunto de canciones de manera eficiente, soportando operaciones clave como inserción, eliminación y búsqueda. Es escalable y puede manejar grandes volúmenes de datos gracias a la Tabla Hash y el Árbol AVL.
-
-### Posibles Mejoras
-1. Implementar serialización para guardar los datos en archivos persistentes.
-2. Agregar pruebas unitarias para garantizar la funcionalidad.
-3. Optimizar la búsqueda en el menú para interactuar con estructuras específicas.
 
 
