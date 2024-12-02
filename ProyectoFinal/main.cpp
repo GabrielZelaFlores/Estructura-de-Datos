@@ -1,104 +1,122 @@
-#include "DoublyLinkedList.h"
-#include "HashTable.h"
-#include "AVLTree.h"
-#include <fstream>
-#include <sstream>
+#include "Menu.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include <GLFW/glfw3.h>
 #include <iostream>
+#include <vector>
+#include <cstring>
 
-void loadSongsFromCSV(const std::string& filename, DoublyLinkedList& list,
-                      HashTable& hashTable, AVLTree& avlTree) {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error al abrir el archivo CSV.\n";
-        return;
+GLFWwindow* setupWindow() {
+    if (!glfwInit()) {
+        std::cerr << "Error al inicializar GLFW.\n";
+        return nullptr;
     }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string id, artist, track, genre;
-        int year, popularity, duration;
-        std::getline(ss, id, ',');
-        std::getline(ss, artist, ',');
-        std::getline(ss, track, ',');
-        std::getline(ss, genre, ',');
-        ss >> year >> popularity >> duration;
-
-        Song song(id, artist, track, genre, year, popularity, duration);
-        list.addSong(song);
-        hashTable.insert(song);
-        avlTree.insert(song);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Gestión de Listas de Reproducción", nullptr, nullptr);
+    if (!window) {
+        glfwTerminate();
+        std::cerr << "Error al crear la ventana.\n";
+        return nullptr;
     }
-    file.close();
-}int main() {
-    DoublyLinkedList playlist;
-    HashTable hashTable;
-    AVLTree avlTree;
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+    return window;
+}
 
-    loadSongsFromCSV("spotify_data.csv", playlist, hashTable, avlTree);
+int main() {
+    DoublyLinkedList mainList;
+    HashTable mainHashTable;
+    AVLTree mainAVLTree;
+    std::vector<Playlist> playlists;
 
-    int option;
-    do {
-        std::cout << "\nMenu:\n";
-        std::cout << "1. Agregar canción\n";
-        std::cout << "2. Eliminar canción\n";
-        std::cout << "3. Buscar canción\n";
-        std::cout << "4. Mostrar canciones\n";
-        std::cout << "5. Salir\n";
-        std::cout << "Seleccione una opción: ";
-        std::cin >> option;
-        switch (option) {
-            case 1: {
-                std::string id, artist, track, genre;
-                int year, popularity, duration;
-                std::cout << "Ingrese ID: "; std::cin >> id;
-                std::cout << "Ingrese Artista: "; std::cin.ignore(); std::getline(std::cin, artist);
-                std::cout << "Ingrese Canción: "; std::getline(std::cin, track);
-                std::cout << "Ingrese Género: "; std::getline(std::cin, genre);
-                std::cout << "Ingrese Año: "; std::cin >> year;
-                std::cout << "Ingrese Popularidad: "; std::cin >> popularity;
-                std::cout << "Ingrese Duración: "; std::cin >> duration;
+    // Inicializar ventana e ImGui
+    GLFWwindow* window = setupWindow();
+    if (!window) return -1;
 
-                Song newSong(id, artist, track, genre, year, popularity, duration);
-                playlist.addSong(newSong);
-                hashTable.insert(newSong);
-                avlTree.insert(newSong);
-                break;
-            }
-            case 2: {
-                std::string id;
-                std::cout << "Ingrese ID de la canción a eliminar: "; std::cin >> id;
-                if (playlist.removeSong(id)) {
-                    hashTable.remove(id);
-                    std::cout << "Canción eliminada.\n";
-                } else {
-                    std::cout << "Canción no encontrada.\n";
-                }
-                break;
-            }
-            case 3: {
-                std::string id;
-                std::cout << "Ingrese ID de la canción a buscar: "; std::cin >> id;
-                Song* song = hashTable.find(id);
-                if (song) {
-                    std::cout << "Canción encontrada: " << song->getTrackName() << " - " 
-                              << song->getArtistName() << std::endl;
-                } else {
-                    std::cout << "Canción no encontrada.\n";
-                }
-                break;
-            }
-            case 4:
-                std::cout << "Canciones en la lista:\n";
-                playlist.printAll();
-                break;
-            case 5:
-                std::cout << "Saliendo...\n";
-                break;
-            default:
-                std::cout << "Opción inválida. Intente de nuevo.\n";
-            }
-        } while (option != 5);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 130");
 
-        return 0;
+    // Cargar canciones desde CSV
+    loadSongsFromCSV("spotify_data.csv", mainList, mainHashTable, mainAVLTree);
+
+    // Añadir la lista principal
+    playlists.emplace_back("Lista Principal", mainList, mainHashTable, mainAVLTree);
+
+    // Variables para el menú principal
+    static char newListName[256] = "";
+    static int selectedPlaylist = 0; // Por defecto, lista principal seleccionada
+    static bool showMenuWindow = false; // Control para mostrar el menú de la lista seleccionada
+
+    // Bucle principal
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // Mostrar menú principal
+        ImGui::Begin("Gestión de Listas de Reproducción");
+
+        ImGui::Text("Listas de Reproducción:");
+        for (size_t i = 0; i < playlists.size(); ++i) {
+            if (ImGui::Selectable(playlists[i].name.c_str(), selectedPlaylist == static_cast<int>(i))) {
+                selectedPlaylist = static_cast<int>(i);
+            }
         }
+
+        ImGui::Separator();
+
+        ImGui::Text("Crear Nueva Lista:");
+        ImGui::InputText("Nombre", newListName, IM_ARRAYSIZE(newListName));
+        if (ImGui::Button("Crear Lista")) {
+            if (strlen(newListName) > 0) {
+                playlists.emplace_back(newListName);
+                std::cout << "Nueva lista de reproducción \"" << newListName << "\" creada.\n";
+                memset(newListName, 0, sizeof(newListName)); // Limpiar el buffer
+            } else {
+                std::cout << "Error: el nombre de la lista está vacío.\n";
+            }
+        }
+
+        ImGui::Separator();
+        ImGui::Text("Seleccione una lista para interactuar:");
+
+        if (ImGui::Button("Abrir Menú de Lista Seleccionada")) {
+            showMenuWindow = true; // Activar la ventana del menú
+        }
+
+        ImGui::End();
+
+        // Mostrar menú específico para la lista seleccionada
+        if (showMenuWindow) {
+            ImGui::Begin(playlists[selectedPlaylist].name.c_str(), &showMenuWindow);
+
+            // Llama a menuImGui para manejar las opciones de la lista seleccionada
+            menuImGui(playlists[selectedPlaylist].list, playlists[selectedPlaylist].hashTable,
+                      playlists[selectedPlaylist].avlTree, mainList);
+
+            ImGui::End();
+        }
+
+        // Renderizar ImGui
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window, &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
+    }
+
+    // Limpiar ImGui y GLFW
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+}
