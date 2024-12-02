@@ -56,6 +56,7 @@ void addSongGlobal(const Song& song, AVLTree& avlTree, HashTable& hashTable, Dou
     cout << "Canción añadida exitosamente: " << song.getTrackName() << "\n";
 }
 ```
+![AgregarCancion](https://github.com/user-attachments/assets/2035a3e1-29da-46aa-82cf-f8fab997d72d)
 
 #### **Eliminar Canción**
 Aquí implementamos un método para eliminar una canción de todas las estructuras. Esta función verifica primero si la canción existe y luego la borra de las estructuras asociadas.
@@ -73,6 +74,8 @@ void deleteSongGlobal(const std::string& trackId, AVLTree& avlTree, HashTable& h
 }
 ```
 
+![EliminarCancion](https://github.com/user-attachments/assets/48047d33-1152-4ceb-b1cc-7cf4b97c20b2)
+
 #### **Ordenar Canciones**
 Con este método, los usuarios pueden ordenar las canciones según diferentes criterios, como la popularidad, de forma ascendente o descendente.
 
@@ -87,6 +90,7 @@ void sortSongs(DoublyLinkedList& list, const std::string& criteria, bool ascendi
     // Otros criterios...
 }
 ```
+![CambiarOrden](https://github.com/user-attachments/assets/61bc82ad-44a4-4e49-bd76-6c712e5c39dc)
 
 #### **Buscar Canción**
 Esta función permite encontrar canciones por año de lanzamiento utilizando la Tabla Hash para agilizar el proceso.
@@ -106,7 +110,7 @@ void displaySongsByYear(HashTable& hashTable, int year) {
     }
 }
 ```
-
+![BuscarCanciones](https://github.com/user-attachments/assets/748a9345-a36b-4c44-a99d-ed2150a8ee5b)
 ---
 
 ### **2.3 Interfaz Gráfica**
@@ -136,6 +140,7 @@ void menuImGui(DoublyLinkedList& list, HashTable& hashTable, AVLTree& avlTree) {
     ImGui::End();
 }
 ```
+![GestionDeListasDeReproduccion](https://github.com/user-attachments/assets/94d0e259-ab12-4086-9871-8b263d7e47b0)
 
 ---
 
