@@ -22,9 +22,7 @@ Este proyecto contiene cuatro programas desarrollados en **Kotlin** aplicando co
 ## Ejecución en Git Bash
 
 1. Compilar el archivo Kotlin:  
-   ```bash
    kotlinc NombreArchivo.kt -include-runtime -d NombreArchivo.jar
-````
 
 2. Ejecutar el programa compilado:
 
@@ -34,39 +32,32 @@ Este proyecto contiene cuatro programas desarrollados en **Kotlin** aplicando co
 
 > Ejemplo para **CuentaBancaria.kt**:
 
-```bash
 kotlinc CuentaBancaria.kt -include-runtime -d CuentaBancaria.jar
 java -jar CuentaBancaria.jar
-```
-
----
 
 ## Commits recomendados
 
 * **Cuenta Bancaria**
-
-  ```bash
+  
   git add CuentaBancaria.kt
+  
   git commit -m "Añadir clase CuentaBancaria con validaciones de saldo y retiro"
   ```
 
 * **Producto**
 
-  ```bash
   git add Producto.kt
   git commit -m "Añadir clase Producto con validación de precio y descuento"
   ```
 
 * **Figuras**
 
-  ```bash
   git add Figuras.kt
   git commit -m "Añadir clases Cuadrado, Rectángulo y Círculo con métodos de área y perímetro"
   ```
 
 * **Biblioteca**
 
-  ```bash
   git add Biblioteca.kt
   git commit -m "Implementar sistema básico de gestión de biblioteca con usuarios y préstamos"
   ```
