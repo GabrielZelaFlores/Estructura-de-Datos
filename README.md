@@ -1,73 +1,58 @@
+Proyecto 2: Programación Orientada a Objetos en Kotlin
+Este proyecto incluye cuatro programas desarrollados en Kotlin, aplicando conceptos de Programación Orientada a Objetos (POO).
+Contenido
 
-# Proyecto 2 Kotlin POO
+Cuenta BancariaSimula una cuenta bancaria con atributos de saldo y límite de retiro. Incluye validaciones para operaciones de retiro según reglas definidas.
 
-Este proyecto contiene cuatro programas desarrollados en **Kotlin** aplicando conceptos de **Programación Orientada a Objetos (POO)**.  
+ProductoRepresenta un producto con precio y porcentaje de descuento. Valida los valores ingresados y calcula el precio final con descuento aplicado.
 
-## Contenido
+FigurasImplementa clases para Cuadrado, Rectángulo y Círculo, con métodos para calcular área y perímetro de cada figura.
 
-1. **Cuenta Bancaria**  
-   Simula una cuenta bancaria con saldo y límite de retiro. Valida operaciones de retiro según reglas.
+BibliotecaSistema básico de gestión de biblioteca con materiales (libros y revistas), usuarios y operaciones de préstamo y devolución.
 
-2. **Producto**  
-   Representa un producto con precio y porcentaje de descuento, validando valores y calculando el precio final.
 
-3. **Figuras**  
-   Implementa clases para **cuadrado, rectángulo y círculo**, con métodos para calcular área y perímetro.
+Requisitos
 
-4. **Biblioteca**  
-   Sistema básico con materiales (libros, revistas), usuarios y operaciones de préstamo y devolución.
+Kotlin SDK instalado.
+Git Bash (o una terminal compatible) para compilación y ejecución.
 
----
+Instrucciones de Ejecución
 
-## Ejecución en Git Bash
+Compilar el archivo Kotlin:  
+kotlinc NombreArchivo.kt -include-runtime -d NombreArchivo.jar
 
-1. Compilar el archivo Kotlin:  
-   kotlinc NombreArchivo.kt -include-runtime -d NombreArchivo.jar
 
-2. Ejecutar el programa compilado:
+Ejecutar el programa compilado:  
+java -jar NombreArchivo.jar
 
-   ```bash
-   java -jar NombreArchivo.jar
-   ```
 
-> Ejemplo para **CuentaBancaria.kt**:
 
+Ejemplo para CuentaBancaria.kt:
 kotlinc CuentaBancaria.kt -include-runtime -d CuentaBancaria.jar
 java -jar CuentaBancaria.jar
 
-## Commits recomendados
+Commits Recomendados
 
-* **Cuenta Bancaria**
-  
-  git add CuentaBancaria.kt
-  
-  git commit -m "Añadir clase CuentaBancaria con validaciones de saldo y retiro"
-  ```
+Cuenta Bancaria  
+git add CuentaBancaria.kt
+git commit -m "Añadir clase CuentaBancaria con validaciones de saldo y retiro"
 
-* **Producto**
 
-  git add Producto.kt
-  git commit -m "Añadir clase Producto con validación de precio y descuento"
-  ```
+Producto  
+git add Producto.kt
+git commit -m "Añadir clase Producto con validación de precio y descuento"
 
-* **Figuras**
 
-  git add Figuras.kt
-  git commit -m "Añadir clases Cuadrado, Rectángulo y Círculo con métodos de área y perímetro"
-  ```
+Figuras  
+git add Figuras.kt
+git commit -m "Añadir clases Cuadrado, Rectángulo y Círculo con métodos de área y perímetro"
 
-* **Biblioteca**
 
-  git add Biblioteca.kt
-  git commit -m "Implementar sistema básico de gestión de biblioteca con usuarios y préstamos"
-  ```
+Biblioteca  
+git add Biblioteca.kt
+git commit -m "Implementar sistema básico de gestión de biblioteca con usuarios y préstamos"
 
----
 
-## Autor
 
-**Yabar Carazas Melvin Jarred**
-Ingeniería de Software – 6° semestre
-Fecha: 02/09/2025
-
-```
+Autor
+Yabar Carazas Melvin JarredIngeniería de Software – 6° semestreFecha: 02/09/2025
